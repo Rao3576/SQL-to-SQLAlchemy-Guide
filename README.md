@@ -1,22 +1,8 @@
 # SQL-to-SQLAlchemy-Guide
 A complete beginner-to-advanced comparison guide between SQL and SQLAlchemy ORM with clear examples.
 
-**🧱 Step 2: Project Structure****
+<img width="775" height="538" alt="image" src="https://github.com/user-attachments/assets/d724d272-3d3d-490d-957c-174340082673" />
 
-SQL-to-SQLAlchemy-Guide/
-│
-├── README.md                ← Main tutorial content
-├── examples/
-│   ├── student_model.py     ← Example SQLAlchemy model
-│   ├── queries_example.py   ← CRUD + filters demo
-│   └── requirements.txt     ← Libraries list
-└── LICENSE
-
-
-**🧾 Step 3: Write Your README.md**
-
-
-Here’s a perfectly formatted GitHub-style README (Markdown) ready to paste 👇
 
 **📘 SQL ↔ SQLAlchemy Comparison Guide**
 
@@ -126,6 +112,7 @@ SELECT * FROM students JOIN courses ON students.course_id = courses.id;
 result = session.query(Student, Course).join(Course, Student.course_id == Course.id).all()
 
 **🧠 15️⃣ GROUP BY**
+
 SELECT city, COUNT(*) FROM students GROUP BY city;
 
 result = session.query(Student.city, func.count(Student.id)).group_by(Student.city).all()
@@ -141,20 +128,6 @@ result = (
     .all()
 )
 
-**✅ Summary Table**
-
-
-Concept	SQL	SQLAlchemy ORM
-Read	SELECT	.query()
-Filter	WHERE	.filter()
-Sort	ORDER BY	.order_by()
-Insert	INSERT	.add()
-Update	UPDATE	Change object + .commit()
-Delete	DELETE	.delete()
-Join	JOIN	.join()
-Group	GROUP BY	.group_by()
-Count	COUNT()	func.count()
-Limit	LIMIT	.limit()
 
 **🧩 Quick Takeaway**
 
@@ -164,7 +137,7 @@ SQLAlchemy → Pythonic ORM layer
 
 ORM (Object Relational Mapping) → Treat tables as classes
 
-Core vs ORM
+**Core vs ORM**
 
 Core → Closer to SQL
 
