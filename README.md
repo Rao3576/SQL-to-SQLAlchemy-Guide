@@ -130,6 +130,8 @@ result = (
     .all()
 )
 
+<img width="932" height="788" alt="image" src="https://github.com/user-attachments/assets/5ae0a46d-4ea4-476b-bb69-0fdc33e3dade" />
+
 
 **🧩 Quick Takeaway**
 
