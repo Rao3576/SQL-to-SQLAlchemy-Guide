@@ -1,6 +1,12 @@
 # SQL-to-SQLAlchemy-Guide
 A complete beginner-to-advanced comparison guide between SQL and SQLAlchemy ORM with clear examples.
 
+
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/b7b41f10-7368-49fe-aab1-e4b523f2a209" />
+
+
+
+
 <img width="775" height="538" alt="image" src="https://github.com/user-attachments/assets/d724d272-3d3d-490d-957c-174340082673" />
 
 
