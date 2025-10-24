@@ -1,6 +1,30 @@
 # SQL-to-SQLAlchemy-Guide
 A complete beginner-to-advanced comparison guide between SQL and SQLAlchemy ORM with clear examples.
 
+**2️⃣ What is SQLAlchemy?**
+
+**🔹 Meaning:**
+
+SQLAlchemy is a Python library that allows you to interact with databases without writing raw SQL code.
+You can perform all database operations (like insert, update, delete, query) directly from Python code, and SQLAlchemy automatically converts your Python code into the actual SQL that the database understands.
+
+**🔹 Main Purpose:**
+
+To avoid writing SQL manually every time.
+
+To make your code cleaner, more organized, and more secure.
+
+To ensure portability — you can switch databases (e.g., from MySQL to PostgreSQL) without rewriting your entire code.
+
+**3️⃣ Two Main Parts (Components) of SQLAlchemy**
+
+
+| Part                                  | Description                                                                                                                                           |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Core**                           | Works close to raw SQL — you write queries similar to SQL but in Python syntax. Gives you **fine-grained control** over how queries execute.          |
+| **2. ORM (Object Relational Mapper)** | The easier, more Pythonic approach. You define **Python classes** that represent database tables, and SQLAlchemy automatically generates SQL for you. |
+
+
 
 
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/b7b41f10-7368-49fe-aab1-e4b523f2a209" />
