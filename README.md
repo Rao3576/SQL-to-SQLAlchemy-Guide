@@ -107,42 +107,213 @@ SELECT * FROM students WHERE age BETWEEN 18 AND 25;
 
 students = session.query(Student).filter(Student.age.between(18, 25)).all()
 
-**14️⃣ JOIN**
+**🔹 INNER JOIN**
 
-SELECT * FROM students JOIN courses ON students.course_id = courses.id;
+SELECT books.title, authors.name
+FROM books
+INNER JOIN authors ON books.author_id = authors.id;
 
-result = session.query(Student, Course).join(Course, Student.course_id == Course.id).all()
+result = session.query(Book.title, Author.name).join(Author).all()
 
-**15️⃣ GROUP BY**
 
-SELECT city, COUNT(*) FROM students GROUP BY city;
+✅ .join() creates an INNER JOIN between tables.
+✅ It only returns records with matching keys in both tables.
 
-result = session.query(Student.city, func.count(Student.id)).group_by(Student.city).all()
+**🔹 LEFT JOIN**
 
-**16️⃣ HAVING**
+SELECT authors.name, books.title
+FROM authors
+LEFT JOIN books ON authors.id = books.author_id;
 
-SELECT city, COUNT(*) FROM students GROUP BY city HAVING COUNT(*) > 5;
+result = session.query(Author.name, Book.title).outerjoin(Book).all()
+
+
+✅ .outerjoin() performs a LEFT JOIN.
+✅ Returns all authors even if they don’t have a book.
+
+**🔹 RIGHT JOIN**
+
+(SQLAlchemy doesn’t have direct right join — reverse the order)
+
+result = session.query(Book.title, Author.name).join(Author, isouter=True).all()
+
+**🔹 FULL JOIN**
+
+(SQLAlchemy Core supports it, ORM doesn’t)
+
+from sqlalchemy import select, union_all
+
+q1 = select(Book.title, Author.name).join(Author)
+q2 = select(Book.title, Author.name).outerjoin(Author)
+result = session.execute(q1.union_all(q2)).all()
+
+**🔹 SELF JOIN**
+
+SELECT e1.name AS Employee, e2.name AS Manager
+FROM employees e1
+JOIN employees e2 ON e1.manager_id = e2.id;
+
+e1 = aliased(Employee)
+e2 = aliased(Employee)
 
 result = (
-    session.query(Student.city, func.count(Student.id))
-    .group_by(Student.city)
-    .having(func.count(Student.id) > 5)
+    session.query(e1.name.label("Employee"), e2.name.label("Manager"))
+    .join(e2, e1.manager_id == e2.id)
     .all()
 )
 
-<img width="932" height="788" alt="image" src="https://github.com/user-attachments/assets/5ae0a46d-4ea4-476b-bb69-0fdc33e3dade" />
+**🧱 SQL UNION & UNION ALL**
+
+**🔹 UNION**
+
+SELECT name FROM authors
+UNION
+SELECT name FROM editors;
+
+from sqlalchemy import select
+
+q1 = select(Author.name)
+q2 = select(Editor.name)
+union_q = q1.union(q2)
+session.execute(union_q).all()
 
 
-**🧩 Quick Takeaway**
+✅ .union() removes duplicates.
 
-SQL → Manual queries
+**🔹 UNION ALL**
 
-SQLAlchemy → Pythonic ORM layer
+SELECT name FROM authors
+UNION ALL
+SELECT name FROM editors;
 
-ORM (Object Relational Mapping) → Treat tables as classes
+union_all_q = q1.union_all(q2)
+session.execute(union_all_q).all()
 
-**Core vs ORM**
 
-Core → Closer to SQL
+✅ .union_all() keeps duplicates.
 
-ORM → Easier and object-based
+**🧮 GROUP BY and HAVING**
+
+🔹 GROUP BY
+SELECT authors.name, COUNT(books.id)
+FROM authors
+JOIN books ON authors.id = books.author_id
+GROUP BY authors.name;
+
+from sqlalchemy import func
+
+result = (
+    session.query(Author.name, func.count(Book.id))
+    .join(Book)
+    .group_by(Author.name)
+    .all()
+)
+
+**🔹 HAVING**
+
+SELECT authors.name, COUNT(books.id)
+FROM authors
+JOIN books ON authors.id = books.author_id
+GROUP BY authors.name
+HAVING COUNT(books.id) > 1;
+
+result = (
+    session.query(Author.name, func.count(Book.id))
+    .join(Book)
+    .group_by(Author.name)
+    .having(func.count(Book.id) > 1)
+    .all()
+)
+
+**🔍 EXISTS**
+
+SELECT * FROM authors
+WHERE EXISTS (SELECT id FROM books WHERE price > 600);
+
+from sqlalchemy import exists
+
+subq = session.query(Book.id).filter(Book.price > 600).exists()
+session.query(Author).filter(subq).all()
+
+**🔸 ANY / ALL**
+
+SELECT * FROM books WHERE price > ANY (400, 600);
+
+from sqlalchemy.sql import any_, all_
+
+session.query(Book).filter(Book.price > any_([400, 600])).all()
+
+
+✅ any_() checks if the condition matches any element.
+✅ all_() checks if condition matches all elements.
+
+**⚙️ SELECT INTO / INSERT INTO SELECT**
+
+**🔹 SELECT INTO**
+
+SELECT * INTO new_table FROM books WHERE price > 500;
+
+
+(SQLAlchemy doesn’t directly create a new table — use ORM model creation)
+
+**🔹 INSERT INTO SELECT**
+
+INSERT INTO old_books (title, price)
+SELECT title, price FROM books WHERE price < 400;
+
+from sqlalchemy import insert, select
+
+stmt = insert(OldBook).from_select(
+    ["title", "price"],
+    select(Book.title, Book.price).where(Book.price < 400)
+)
+session.execute(stmt)
+session.commit()
+
+**🧠 CASE Statement**
+
+SELECT title,
+CASE
+    WHEN price > 600 THEN 'Expensive'
+    ELSE 'Cheap'
+END AS price_tag
+FROM books;
+
+from sqlalchemy import case
+
+case_query = session.query(
+    Book.title,
+    case(
+        (Book.price > 600, "Expensive"),
+        else_="Cheap"
+    ).label("price_tag")
+).all()
+
+**NULL Functions**
+
+SELECT COALESCE(price, 0) FROM books;
+
+from sqlalchemy import func
+
+session.query(func.coalesce(Book.price, 0)).all()
+
+
+✅ func.coalesce() replaces NULL values with a default.
+
+**STORED PROCEDURES**
+
+CALL get_books_by_author('John');
+
+from sqlalchemy import text
+
+session.execute(text("CALL get_books_by_author(:name)"), {"name": "John"})
+
+**SQL Comments**
+
+-- This is a comment
+SELECT * FROM books;
+
+from sqlalchemy import text
+
+session.execute(text("-- Comment\nSELECT * FROM books"))
+
