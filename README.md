@@ -2,7 +2,21 @@
 A complete beginner-to-advanced comparison guide between SQL and SQLAlchemy ORM with clear examples.
 
 
+
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/b7b41f10-7368-49fe-aab1-e4b523f2a209" />
+
+
+**5️⃣ Why We Use SQLAlchemy?**
+
+
+| Feature             | Raw SQL                | SQLAlchemy ORM                |
+| ------------------- | ---------------------- | ----------------------------- |
+| Connection Handling | Manual                 | Automatic                     |
+| Transactions        | Manual control         | Built-in context management   |
+| Portability         | Vendor-specific SQL    | Works with multiple databases |
+| Security            | Prone to SQL Injection | Parameterized safely          |
+| Productivity        | Manual queries         | Object-based queries          |
+
 
 
 
